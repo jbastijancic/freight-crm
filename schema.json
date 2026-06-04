@@ -1,0 +1,36 @@
+{
+  "contact": {
+    "description": "A person or company in the CRM",
+    "fields": {
+      "id":          { "type": "string",  "note": "Unique identifier, e.g. C-001" },
+      "type":        { "type": "string",  "values": ["customer", "carrier", "broker", "vendor"] },
+      "name":        { "type": "string" },
+      "company":     { "type": "string" },
+      "phone":       { "type": "string" },
+      "email":       { "type": "string" },
+      "address":     { "type": "string" },
+      "notes":       { "type": "string" },
+      "created_at":  { "type": "date",    "format": "YYYY-MM-DD" },
+      "active":      { "type": "boolean" }
+    },
+    "required": ["id", "type", "name"]
+  },
+  "shipment": {
+    "description": "A freight shipment",
+    "fields": {
+      "id":             { "type": "string",  "note": "Unique identifier, e.g. S-001" },
+      "status":         { "type": "string",  "values": ["quote", "booked", "in_transit", "delivered", "cancelled"] },
+      "customer_id":    { "type": "string",  "note": "References contact.id" },
+      "carrier_id":     { "type": "string",  "note": "References contact.id" },
+      "origin":         { "type": "string" },
+      "destination":    { "type": "string" },
+      "pickup_date":    { "type": "date",    "format": "YYYY-MM-DD" },
+      "delivery_date":  { "type": "date",    "format": "YYYY-MM-DD" },
+      "rate":           { "type": "number",  "note": "Total rate in USD" },
+      "commodity":      { "type": "string" },
+      "weight_lbs":     { "type": "number" },
+      "notes":          { "type": "string" }
+    },
+    "required": ["id", "status", "customer_id", "origin", "destination"]
+  }
+}

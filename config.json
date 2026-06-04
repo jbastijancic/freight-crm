@@ -1,0 +1,20 @@
+{
+  "company": {
+    "name": "Your Company Name",
+    "phone": "",
+    "email": "",
+    "address": ""
+  },
+  "defaults": {
+    "currency": "USD",
+    "date_format": "YYYY-MM-DD",
+    "weight_unit": "lbs",
+    "distance_unit": "miles"
+  },
+  "id_prefixes": {
+    "contact":  "C-",
+    "shipment": "S-"
+  },
+  "contact_types": ["customer", "carrier", "broker", "vendor"],
+  "shipment_statuses": ["quote", "booked", "in_transit", "delivered", "cancelled"]
+}
