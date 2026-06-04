@@ -1,0 +1,20 @@
+{
+  "company": {
+    "name": "Freight Daddy",
+    "phone": "323 - 271 - 4889",
+    "email": "joey.rose@priority1inc.net",
+    "address": "9005 Cynthia Street Unit 312, West Hollywood, CA, 90069"
+  },
+  "defaults": {
+    "currency": "USD",
+    "date_format": "YYYY-MM-DD",
+    "weight_unit": "lbs",
+    "distance_unit": "miles"
+  },
+  "id_prefixes": {
+    "contact":  "C-",
+    "shipment": "S-"
+  },
+  "contact_types": ["customer", "carrier", "broker", "vendor"],
+  "shipment_statuses": ["quote", "booked", "in_transit", "delivered", "cancelled"]
+}
