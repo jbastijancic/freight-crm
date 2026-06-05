@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}{{ contact.name }} — {{ config.company.name }}{% endblock %}
+
+{% block content %}
+<div class="topbar">
+  <h1>{{ contact.name }}</h1>
+  <div class="actions">
+    <a href="{{ url_for('contact_edit', contact_id=contact.id) }}" class="btn btn-secondary">Edit</a>
+    <a href="{{ url_for('contacts_list') }}" class="btn btn-secondary">Back</a>
+  </div>
+</div>
+<div class="content">
+
+  <div class="card">
+    <div class="card-header">Contact Info</div>
+    <div class="card-body">
+      <div class="detail-grid">
+        <div class="detail-row"><span class="dk">ID</span><span class="dv">{{ contact.id }}</span></div>
+        <div class="detail-row"><span class="dk">Type</span><span class="dv"><span class="badge badge-{{ contact.type }}">{{ contact.type }}</span></span></div>
+        <div class="detail-row"><span class="dk">Company</span><span class="dv">{{ contact.get('company', '—') }}</span></div>
+        <div class="detail-row"><span class="dk">Phone</span><span class="dv">{{ contact.get('phone', '—') }}</span></div>
+        <div class="detail-row"><span class="dk">Email</span><span class="dv">{{ contact.get('email', '—') }}</span></div>
+        <div class="detail-row"><span class="dk">Address</span><span class="dv">{{ contact.get('address', '—') }}</span></div>
+        <div class="detail-row"><span class="dk">Active</span><span class="dv">{{ 'Yes' if contact.get('active') else 'No' }}</span></div>
+        <div class="detail-row"><span class="dk">Created</span><span class="dv">{{ contact.get('created_at', '—') }}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-6">
+    <div class="card-header">Notes</div>
+    <div class="card-body">
+      {% if contact.get('notes') %}
+      <div class="notes-log">
+        {% for note in contact.notes %}
+        <div class="note-entry">
+          <div class="note-date">{{ note.date }}</div>
+          <div>{{ note.text }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-muted">No notes yet. <a href="{{ url_for('contact_edit', contact_id=contact.id) }}">Add one</a>.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if related %}
+  <div class="card mt-6">
+    <div class="card-header">Shipments</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Role</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Pickup</th>
+            <th class="text-right">Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in related %}
+          <tr>
+            <td><a href="{{ url_for('shipment_detail', shipment_id=s.id) }}">{{ s.id }}</a></td>
+            <td><span class="badge badge-{{ s.status }}">{{ s.status.replace('_', ' ') }}</span></td>
+            <td>{{ 'Customer' if s.customer_id == contact.id else 'Carrier' }}</td>
+            <td>{{ s.origin }}</td>
+            <td>{{ s.destination }}</td>
+            <td>{{ s.pickup_date }}</td>
+            <td class="text-right text-money">${{ "{:,.2f}".format(s.rate) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

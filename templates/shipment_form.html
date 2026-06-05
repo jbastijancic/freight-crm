@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Log Shipment — {{ config.company.name }}{% endblock %}
+
+{% block content %}
+<div class="topbar">
+  <h1>Log New Shipment</h1>
+  <div class="actions">
+    <a href="{{ url_for('shipments_list') }}" class="btn btn-secondary">Cancel</a>
+  </div>
+</div>
+<div class="content">
+
+  <div class="card">
+    <div class="card-body">
+      <form method="post">
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Customer *</label>
+            <select name="customer_id" required>
+              <option value="">Select customer…</option>
+              {% for c in contacts if c.type == 'customer' %}
+              <option value="{{ c.id }}">{{ c.name }} ({{ c.id }})</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Carrier</label>
+            <select name="carrier_id">
+              <option value="">Select carrier…</option>
+              {% for c in contacts if c.type == 'carrier' %}
+              <option value="{{ c.id }}">{{ c.name }} ({{ c.id }})</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Origin *</label>
+            <input type="text" name="origin" placeholder="City, ST" required>
+          </div>
+
+          <div class="form-group">
+            <label>Destination *</label>
+            <input type="text" name="destination" placeholder="City, ST" required>
+          </div>
+
+          <div class="form-group">
+            <label>Pickup Date</label>
+            <input type="date" name="pickup_date">
+          </div>
+
+          <div class="form-group">
+            <label>Delivery Date</label>
+            <input type="date" name="delivery_date">
+          </div>
+
+          <div class="form-group">
+            <label>Rate (USD)</label>
+            <input type="number" name="rate" step="0.01" min="0" placeholder="0.00">
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            <select name="status">
+              {% for s in config.shipment_statuses %}
+              <option value="{{ s }}" {{ 'selected' if s == 'booked' }}>{{ s.replace('_', ' ').capitalize() }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Commodity</label>
+            <input type="text" name="commodity" placeholder="e.g. Auto Parts">
+          </div>
+
+          <div class="form-group">
+            <label>Weight (lbs)</label>
+            <input type="number" name="weight_lbs" min="0" placeholder="0">
+          </div>
+
+          <div class="form-group full">
+            <label>Notes</label>
+            <textarea name="notes" placeholder="Any special instructions or details…"></textarea>
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Log Shipment</button>
+          <a href="{{ url_for('shipments_list') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

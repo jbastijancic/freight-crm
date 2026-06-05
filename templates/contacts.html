@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Contacts — {{ config.company.name }}{% endblock %}
+
+{% block content %}
+<div class="topbar">
+  <h1>Contacts</h1>
+  <div class="actions">
+    <a href="{{ url_for('contact_new') }}" class="btn btn-primary">+ Add Contact</a>
+  </div>
+</div>
+<div class="content">
+
+  <form method="get" class="filters">
+    <input type="text" name="q" placeholder="Search name, company, email…" value="{{ q }}">
+    <select name="type" onchange="this.form.submit()">
+      <option value="">All types</option>
+      {% for t in config.contact_types %}
+      <option value="{{ t }}" {{ 'selected' if type_filter == t }}>{{ t.capitalize() }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-secondary" type="submit">Search</button>
+    {% if q or type_filter %}
+    <a href="{{ url_for('contacts_list') }}" class="btn btn-secondary">Clear</a>
+    {% endif %}
+  </form>
+
+  <div class="card">
+    {% if contacts %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Name</th>
+            <th>Company</th>
+            <th>Phone</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in contacts %}
+          <tr>
+            <td><a href="{{ url_for('contact_detail', contact_id=c.id) }}">{{ c.id }}</a></td>
+            <td><span class="badge badge-{{ c.type }}">{{ c.type }}</span></td>
+            <td><a href="{{ url_for('contact_detail', contact_id=c.id) }}">{{ c.name }}</a></td>
+            <td>{{ c.get('company', '') }}</td>
+            <td>{{ c.get('phone', '') }}</td>
+            <td>{{ c.get('email', '') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty">No contacts found.</div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
