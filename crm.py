@@ -94,7 +94,15 @@ def cmd_show(args):
         return
     print()
     for key, value in match.items():
-        print(f"  {key:<15} {value}")
+        if key == "notes":
+            print(f"  {'notes':<15}")
+            if value:
+                for entry in value:
+                    print(f"    [{entry['date']}] {entry['text']}")
+            else:
+                print(f"    (none)")
+        else:
+            print(f"  {key:<15} {value}")
     print()
 
 def cmd_edit(args):
@@ -112,9 +120,9 @@ def cmd_edit(args):
 
     config = load_config()
     valid_types = config["contact_types"]
-    editable = ["type", "name", "company", "phone", "email", "address", "notes", "active"]
+    editable = ["type", "name", "company", "phone", "email", "address", "active"]
 
-    print(f"\nEditing {contact_id} — {match['name']}")
+    print(f"\nEditing {contact_id} - {match['name']}")
     print("Press Enter to keep the current value.\n")
 
     for field in editable:
@@ -130,8 +138,18 @@ def cmd_edit(args):
         else:
             match[field] = new_val
 
+    # Notes are appended as a new timestamped entry, never overwritten
+    existing_notes = match.get("notes", [])
+    if existing_notes:
+        print(f"\n  Existing notes:")
+        for entry in existing_notes:
+            print(f"    [{entry['date']}] {entry['text']}")
+    new_note = input("\n  Add a new note (Enter to skip): ").strip()
+    if new_note:
+        match["notes"] = existing_notes + [{"date": date.today().isoformat(), "text": new_note}]
+
     save_contacts(contacts)
-    print(f"\nSaved changes to {contact_id} — {match['name']}\n")
+    print(f"\nSaved changes to {contact_id} - {match['name']}\n")
 
 
 def cmd_add(args):
@@ -147,11 +165,12 @@ def cmd_add(args):
     if not name:
         print("Name is required.")
         return
-    company = input("Company (optional): ").strip()
-    phone   = input("Phone (optional): ").strip()
-    email   = input("Email (optional): ").strip()
-    address = input("Address (optional): ").strip()
-    notes   = input("Notes (optional): ").strip()
+    company   = input("Company (optional): ").strip()
+    phone     = input("Phone (optional): ").strip()
+    email     = input("Email (optional): ").strip()
+    address   = input("Address (optional): ").strip()
+    note_text = input("Notes (optional): ").strip()
+    notes = [{"date": date.today().isoformat(), "text": note_text}] if note_text else []
     new_contact = {
         "id":         next_contact_id(contacts),
         "type":       contact_type,
