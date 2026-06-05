@@ -330,6 +330,75 @@ def _shipments_status(args):
     print(f"\n{shipment_id} updated: {old_status} -> {new_status}\n")
 
 
+# ── Revenue report ───────────────────────────────────────────────────────────
+
+def cmd_report(args):
+    shipments = load_shipments()
+    contacts  = load_contacts()
+    names     = {c["id"]: c["name"] for c in contacts}
+
+    # Only count shipments that have a rate
+    billed = [s for s in shipments if s.get("rate", 0) > 0]
+
+    if not billed:
+        print("\nNo shipments with rates found.\n")
+        return
+
+    total_revenue   = sum(s["rate"] for s in billed)
+    total_shipments = len(billed)
+    avg_rate        = total_revenue / total_shipments
+
+    # Revenue by customer
+    by_customer = {}
+    for s in billed:
+        cid = s.get("customer_id", "Unknown")
+        name = names.get(cid, cid)
+        if name not in by_customer:
+            by_customer[name] = {"count": 0, "total": 0.0}
+        by_customer[name]["count"] += 1
+        by_customer[name]["total"] += s["rate"]
+
+    # Revenue by carrier
+    by_carrier = {}
+    for s in billed:
+        cid = s.get("carrier_id", "")
+        if not cid:
+            continue
+        name = names.get(cid, cid)
+        if name not in by_carrier:
+            by_carrier[name] = {"count": 0, "total": 0.0}
+        by_carrier[name]["count"] += 1
+        by_carrier[name]["total"] += s["rate"]
+
+    # ── Print report ──────────────────────────────────────────────────────────
+    config = load_config()
+    print(f"\n{'=' * 55}")
+    print(f"  {config['company']['name']} - Revenue Report")
+    print(f"{'=' * 55}")
+    print(f"  Total shipments : {total_shipments}")
+    print(f"  Total revenue   : ${total_revenue:,.2f}")
+    print(f"  Average rate    : ${avg_rate:,.2f}")
+
+    print(f"\n  {'BY CUSTOMER'}")
+    print(f"  {'-' * 50}")
+    print(f"  {'Name':<25} {'Loads':>6}  {'Revenue':>12}  {'Avg Rate':>10}")
+    print(f"  {'-' * 50}")
+    for name, data in sorted(by_customer.items(), key=lambda x: -x[1]["total"]):
+        avg = data["total"] / data["count"]
+        print(f"  {name:<25} {data['count']:>6}  ${data['total']:>11,.2f}  ${avg:>9,.2f}")
+
+    if by_carrier:
+        print(f"\n  {'BY CARRIER'}")
+        print(f"  {'-' * 50}")
+        print(f"  {'Name':<25} {'Loads':>6}  {'Revenue':>12}  {'Avg Rate':>10}")
+        print(f"  {'-' * 50}")
+        for name, data in sorted(by_carrier.items(), key=lambda x: -x[1]["total"]):
+            avg = data["total"] / data["count"]
+            print(f"  {name:<25} {data['count']:>6}  ${data['total']:>11,.2f}  ${avg:>9,.2f}")
+
+    print(f"\n{'=' * 55}\n")
+
+
 # ── Command registry & help ───────────────────────────────────────────────────
 
 COMMANDS = {
@@ -339,6 +408,7 @@ COMMANDS = {
     "add":       (cmd_add,       "Add a new contact interactively"),
     "edit":      (cmd_edit,      "Edit an existing contact: python crm.py edit <id>"),
     "shipments": (cmd_shipments, "Manage shipments: python crm.py shipments <list|show|add|status>"),
+    "report":    (cmd_report,    "Revenue summary by customer and carrier"),
 }
 
 def print_help():
