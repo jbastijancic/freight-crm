@@ -1,14 +1,29 @@
 from flask import Flask, render_template, request, redirect, url_for
 import json
+import os
+import sys
 from pathlib import Path
 from datetime import date
 
-app = Flask(__name__)
+# ── Path resolution (dev vs PyInstaller bundle vs cloud) ─────────────────────
+# Templates/static live inside the bundle when frozen; alongside app.py in dev.
+# Data files (JSON) always live next to the executable so they stay writable.
 
-BASE_DIR       = Path(__file__).parent
-CONTACTS_FILE  = BASE_DIR / "contacts.json"
-SHIPMENTS_FILE = BASE_DIR / "shipments.json"
-CONFIG_FILE    = BASE_DIR / "config.json"
+if getattr(sys, "frozen", False):
+    _RESOURCE_DIR = Path(sys._MEIPASS)          # bundled assets (read-only)
+    _DATA_DIR     = Path(sys.executable).parent  # writable folder next to .exe
+else:
+    _RESOURCE_DIR = Path(__file__).parent
+    _DATA_DIR     = Path(__file__).parent
+
+app = Flask(__name__,
+    template_folder=str(_RESOURCE_DIR / "templates"),
+    static_folder=str(_RESOURCE_DIR / "static"),
+)
+
+CONTACTS_FILE  = _DATA_DIR / "contacts.json"
+SHIPMENTS_FILE = _DATA_DIR / "shipments.json"
+CONFIG_FILE    = _DATA_DIR / "config.json"
 
 
 # ── Data helpers ──────────────────────────────────────────────────────────────
@@ -265,6 +280,8 @@ def report():
 
 
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    debug = not getattr(sys, "frozen", False)
     print("Starting Freight Daddy CRM...")
-    print("Open http://localhost:5000 in your browser")
-    app.run(debug=True)
+    print(f"Open http://localhost:{port} in your browser")
+    app.run(host="0.0.0.0", port=port, debug=debug)
