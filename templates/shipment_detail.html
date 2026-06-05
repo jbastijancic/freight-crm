@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}{{ shipment.id }} — {{ config.company.name }}{% endblock %}
+
+{% block content %}
+<div class="topbar">
+  <h1>{{ shipment.id }} &nbsp; <span class="badge badge-{{ shipment.status }}">{{ shipment.status.replace('_', ' ') }}</span></h1>
+  <div class="actions">
+    <a href="{{ url_for('shipments_list') }}" class="btn btn-secondary">Back</a>
+  </div>
+</div>
+<div class="content">
+
+  <div class="card">
+    <div class="card-header">Shipment Details</div>
+    <div class="card-body">
+      <div class="detail-grid">
+        <div class="detail-row"><span class="dk">Customer</span><span class="dv"><a href="{{ url_for('contact_detail', contact_id=shipment.customer_id) }}">{{ names.get(shipment.customer_id, shipment.customer_id) }}</a></span></div>
+        <div class="detail-row"><span class="dk">Carrier</span><span class="dv">{% if shipment.carrier_id %}<a href="{{ url_for('contact_detail', contact_id=shipment.carrier_id) }}">{{ names.get(shipment.carrier_id, shipment.carrier_id) }}</a>{% else %}—{% endif %}</span></div>
+        <div class="detail-row"><span class="dk">Origin</span><span class="dv">{{ shipment.origin }}</span></div>
+        <div class="detail-row"><span class="dk">Destination</span><span class="dv">{{ shipment.destination }}</span></div>
+        <div class="detail-row"><span class="dk">Pickup Date</span><span class="dv">{{ shipment.pickup_date or '—' }}</span></div>
+        <div class="detail-row"><span class="dk">Delivery Date</span><span class="dv">{{ shipment.delivery_date or '—' }}</span></div>
+        <div class="detail-row"><span class="dk">Commodity</span><span class="dv">{{ shipment.commodity or '—' }}</span></div>
+        <div class="detail-row"><span class="dk">Weight</span><span class="dv">{{ "{:,}".format(shipment.weight_lbs) + ' lbs' if shipment.weight_lbs else '—' }}</span></div>
+        <div class="detail-row"><span class="dk">Rate</span><span class="dv text-money">${{ "{:,.2f}".format(shipment.rate) }}</span></div>
+        <div class="detail-row"><span class="dk">Notes</span><span class="dv">{{ shipment.notes or '—' }}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-6">
+    <div class="card-header">Update Status</div>
+    <div class="card-body">
+      <form method="post" action="{{ url_for('shipment_status', shipment_id=shipment.id) }}" style="display:flex; gap:10px; align-items:center;">
+        <select name="status">
+          {% for s in config.shipment_statuses %}
+          <option value="{{ s }}" {{ 'selected' if shipment.status == s }}>{{ s.replace('_', ' ').capitalize() }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

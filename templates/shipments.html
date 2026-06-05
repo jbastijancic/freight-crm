@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Shipments — {{ config.company.name }}{% endblock %}
+
+{% block content %}
+<div class="topbar">
+  <h1>Shipments</h1>
+  <div class="actions">
+    <a href="{{ url_for('shipment_new') }}" class="btn btn-primary">+ Log Shipment</a>
+  </div>
+</div>
+<div class="content">
+
+  <form method="get" class="filters">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All statuses</option>
+      {% for s in config.shipment_statuses %}
+      <option value="{{ s }}" {{ 'selected' if status_filter == s }}>{{ s.replace('_', ' ').capitalize() }}</option>
+      {% endfor %}
+    </select>
+    {% if status_filter %}
+    <a href="{{ url_for('shipments_list') }}" class="btn btn-secondary">Clear</a>
+    {% endif %}
+  </form>
+
+  <div class="card">
+    {% if shipments %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Customer</th>
+            <th>Carrier</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Pickup</th>
+            <th class="text-right">Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in shipments %}
+          <tr>
+            <td><a href="{{ url_for('shipment_detail', shipment_id=s.id) }}">{{ s.id }}</a></td>
+            <td><span class="badge badge-{{ s.status }}">{{ s.status.replace('_', ' ') }}</span></td>
+            <td>{{ names.get(s.customer_id, s.customer_id) }}</td>
+            <td>{{ names.get(s.carrier_id, s.carrier_id) }}</td>
+            <td>{{ s.origin }}</td>
+            <td>{{ s.destination }}</td>
+            <td>{{ s.pickup_date }}</td>
+            <td class="text-right text-money">${{ "{:,.2f}".format(s.rate) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty">No shipments found. <a href="{{ url_for('shipment_new') }}">Log your first load</a>.</div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

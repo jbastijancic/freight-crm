@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Revenue Report — {{ config.company.name }}{% endblock %}
+
+{% block content %}
+<div class="topbar">
+  <h1>Revenue Report</h1>
+</div>
+<div class="content">
+
+  <div class="report-summary">
+    <div class="stat-card">
+      <div class="label">Total Shipments</div>
+      <div class="value blue">{{ total_shipments }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Total Revenue</div>
+      <div class="value green">${{ "{:,.2f}".format(total_revenue) }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Average Rate</div>
+      <div class="value">${{ "{:,.2f}".format(avg_rate) }}</div>
+    </div>
+  </div>
+
+  {% if not billed %}
+  <div class="card">
+    <div class="empty">No billed shipments yet. <a href="{{ url_for('shipment_new') }}">Log your first load</a>.</div>
+  </div>
+  {% else %}
+
+  <div class="card">
+    <div class="card-header">By Customer</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th class="text-right">Loads</th>
+            <th class="text-right">Total Revenue</th>
+            <th class="text-right">Avg Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for name, data in by_customer.items() %}
+          <tr>
+            <td>{{ name }}</td>
+            <td class="text-right">{{ data.count }}</td>
+            <td class="text-right text-money">${{ "{:,.2f}".format(data.total) }}</td>
+            <td class="text-right">${{ "{:,.2f}".format(data.total / data.count) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% if by_carrier %}
+  <div class="card mt-6">
+    <div class="card-header">By Carrier</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Carrier</th>
+            <th class="text-right">Loads</th>
+            <th class="text-right">Total Revenue</th>
+            <th class="text-right">Avg Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for name, data in by_carrier.items() %}
+          <tr>
+            <td>{{ name }}</td>
+            <td class="text-right">{{ data.count }}</td>
+            <td class="text-right text-money">${{ "{:,.2f}".format(data.total) }}</td>
+            <td class="text-right">${{ "{:,.2f}".format(data.total / data.count) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ config.company.name }}{% endblock %}
+
+{% block content %}
+<div class="topbar">
+  <h1>Dashboard</h1>
+</div>
+<div class="content">
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="label">Contacts</div>
+      <div class="value">{{ total_contacts }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Total Shipments</div>
+      <div class="value blue">{{ total_shipments }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">In Transit</div>
+      <div class="value">{{ in_transit }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Total Revenue</div>
+      <div class="value green">${{ "{:,.0f}".format(total_revenue) }}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Recent Shipments</div>
+    {% if recent %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Customer</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Pickup</th>
+            <th class="text-right">Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in recent %}
+          <tr>
+            <td><a href="{{ url_for('shipment_detail', shipment_id=s.id) }}">{{ s.id }}</a></td>
+            <td><span class="badge badge-{{ s.status }}">{{ s.status.replace('_', ' ') }}</span></td>
+            <td>{{ names.get(s.customer_id, s.customer_id) }}</td>
+            <td>{{ s.origin }}</td>
+            <td>{{ s.destination }}</td>
+            <td>{{ s.pickup_date }}</td>
+            <td class="text-right text-money">${{ "{:,.2f}".format(s.rate) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty">No shipments yet. <a href="{{ url_for('shipment_new') }}">Log your first load</a>.</div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
