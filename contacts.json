@@ -8,7 +8,9 @@
       "phone": "312-555-0101",
       "email": "jane.smith@acmemfg.com",
       "address": "123 Industrial Blvd, Chicago, IL 60601",
-      "notes": "Prefers email contact. Ships weekly to East Coast.",
+      "notes": [
+        { "date": "2026-06-04", "text": "Prefers email contact. Ships weekly to East Coast." }
+      ],
       "created_at": "2026-06-04",
       "active": true
     },
@@ -20,7 +22,9 @@
       "phone": "615-555-0188",
       "email": "dispatch@bobtrucking.com",
       "address": "456 Freight Way, Nashville, TN 37201",
-      "notes": "Runs Midwest to Southeast lanes. MC# 123456.",
+      "notes": [
+        { "date": "2026-06-04", "text": "Runs Midwest to Southeast lanes. MC# 123456." }
+      ],
       "created_at": "2026-06-04",
       "active": true
     },
@@ -32,7 +36,9 @@
       "phone": "972-555-0234",
       "email": "lisa@fastlanelogistics.com",
       "address": "789 Commerce Dr, Dallas, TX 75201",
-      "notes": "Good coverage in Texas and Southwest.",
+      "notes": [
+        { "date": "2026-06-04", "text": "Good coverage in Texas and Southwest." }
+      ],
       "created_at": "2026-06-04",
       "active": true
     }
