@@ -97,6 +97,43 @@ def cmd_show(args):
         print(f"  {key:<15} {value}")
     print()
 
+def cmd_edit(args):
+    if not args:
+        print("Usage: python crm.py edit <id>")
+        return
+
+    contact_id = args[0].upper()
+    contacts = load_contacts()
+    match = next((c for c in contacts if c["id"].upper() == contact_id), None)
+
+    if not match:
+        print(f"No contact with ID '{contact_id}'.")
+        return
+
+    config = load_config()
+    valid_types = config["contact_types"]
+    editable = ["type", "name", "company", "phone", "email", "address", "notes", "active"]
+
+    print(f"\nEditing {contact_id} — {match['name']}")
+    print("Press Enter to keep the current value.\n")
+
+    for field in editable:
+        current = match.get(field, "")
+        new_val = input(f"  {field} [{current}]: ").strip()
+        if new_val == "":
+            continue
+        if field == "type" and new_val.lower() not in valid_types:
+            print(f"    Invalid type, keeping '{current}'.")
+            continue
+        if field == "active":
+            match[field] = new_val.lower() in ("true", "yes", "1")
+        else:
+            match[field] = new_val
+
+    save_contacts(contacts)
+    print(f"\nSaved changes to {contact_id} — {match['name']}\n")
+
+
 def cmd_add(args):
     contacts = load_contacts()
     config = load_config()
@@ -281,6 +318,7 @@ COMMANDS = {
     "search":    (cmd_search,    "Search contacts: python crm.py search <query>"),
     "show":      (cmd_show,      "Show contact details: python crm.py show <id>"),
     "add":       (cmd_add,       "Add a new contact interactively"),
+    "edit":      (cmd_edit,      "Edit an existing contact: python crm.py edit <id>"),
     "shipments": (cmd_shipments, "Manage shipments: python crm.py shipments <list|show|add|status>"),
 }
 
