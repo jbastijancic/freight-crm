@@ -1,0 +1,18 @@
+{
+  "shipments": [
+    {
+      "id": "S-001",
+      "status": "delivered",
+      "customer_id": "C-001",
+      "carrier_id": "C-002",
+      "origin": "Chicago, IL",
+      "destination": "Atlanta, GA",
+      "pickup_date": "2026-06-01",
+      "delivery_date": "2026-06-03",
+      "rate": 1850.0,
+      "commodity": "Auto Parts",
+      "weight_lbs": 18000,
+      "notes": "Delivered on time, no issues."
+    }
+  ]
+}
