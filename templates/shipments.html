@@ -5,6 +5,7 @@
 <div class="topbar">
   <h1>Shipments</h1>
   <div class="actions">
+    <a href="{{ url_for('export_shipments') }}" class="btn btn-secondary">Export CSV</a>
     <a href="{{ url_for('shipment_new') }}" class="btn btn-primary">+ Log Shipment</a>
   </div>
 </div>
