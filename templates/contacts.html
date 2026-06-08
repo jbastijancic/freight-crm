@@ -5,6 +5,7 @@
 <div class="topbar">
   <h1>Contacts</h1>
   <div class="actions">
+    <a href="{{ url_for('export_contacts') }}" class="btn btn-secondary">Export CSV</a>
     <a href="{{ url_for('contact_new') }}" class="btn btn-primary">+ Add Contact</a>
   </div>
 </div>
@@ -30,12 +31,7 @@
       <table>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Type</th>
-            <th>Name</th>
-            <th>Company</th>
-            <th>Phone</th>
-            <th>Email</th>
+            <th>ID</th><th>Type</th><th>Name</th><th>Company</th><th>Phone</th><th>Email</th>
           </tr>
         </thead>
         <tbody>
@@ -44,9 +40,9 @@
             <td><a href="{{ url_for('contact_detail', contact_id=c.id) }}">{{ c.id }}</a></td>
             <td><span class="badge badge-{{ c.type }}">{{ c.type }}</span></td>
             <td><a href="{{ url_for('contact_detail', contact_id=c.id) }}">{{ c.name }}</a></td>
-            <td>{{ c.get('company', '') }}</td>
-            <td>{{ c.get('phone', '') }}</td>
-            <td>{{ c.get('email', '') }}</td>
+            <td>{{ c.company or '' }}</td>
+            <td>{{ c.phone or '' }}</td>
+            <td>{{ c.email or '' }}</td>
           </tr>
           {% endfor %}
         </tbody>

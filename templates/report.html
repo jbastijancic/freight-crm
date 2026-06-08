@@ -4,6 +4,9 @@
 {% block content %}
 <div class="topbar">
   <h1>Revenue Report</h1>
+  <div class="actions">
+    <a href="{{ url_for('export_report') }}" class="btn btn-secondary">Export CSV</a>
+  </div>
 </div>
 <div class="content">
 

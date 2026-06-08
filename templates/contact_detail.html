@@ -17,12 +17,12 @@
       <div class="detail-grid">
         <div class="detail-row"><span class="dk">ID</span><span class="dv">{{ contact.id }}</span></div>
         <div class="detail-row"><span class="dk">Type</span><span class="dv"><span class="badge badge-{{ contact.type }}">{{ contact.type }}</span></span></div>
-        <div class="detail-row"><span class="dk">Company</span><span class="dv">{{ contact.get('company', '—') }}</span></div>
-        <div class="detail-row"><span class="dk">Phone</span><span class="dv">{{ contact.get('phone', '—') }}</span></div>
-        <div class="detail-row"><span class="dk">Email</span><span class="dv">{{ contact.get('email', '—') }}</span></div>
-        <div class="detail-row"><span class="dk">Address</span><span class="dv">{{ contact.get('address', '—') }}</span></div>
-        <div class="detail-row"><span class="dk">Active</span><span class="dv">{{ 'Yes' if contact.get('active') else 'No' }}</span></div>
-        <div class="detail-row"><span class="dk">Created</span><span class="dv">{{ contact.get('created_at', '—') }}</span></div>
+        <div class="detail-row"><span class="dk">Company</span><span class="dv">{{ contact.company or '—' }}</span></div>
+        <div class="detail-row"><span class="dk">Phone</span><span class="dv">{{ contact.phone or '—' }}</span></div>
+        <div class="detail-row"><span class="dk">Email</span><span class="dv">{{ contact.email or '—' }}</span></div>
+        <div class="detail-row"><span class="dk">Address</span><span class="dv">{{ contact.address or '—' }}</span></div>
+        <div class="detail-row"><span class="dk">Active</span><span class="dv">{{ 'Yes' if contact.active else 'No' }}</span></div>
+        <div class="detail-row"><span class="dk">Created</span><span class="dv">{{ contact.created_at or '—' }}</span></div>
       </div>
     </div>
   </div>
@@ -30,7 +30,7 @@
   <div class="card mt-6">
     <div class="card-header">Notes</div>
     <div class="card-body">
-      {% if contact.get('notes') %}
+      {% if contact.notes %}
       <div class="notes-log">
         {% for note in contact.notes %}
         <div class="note-entry">
@@ -51,15 +51,7 @@
     <div class="table-wrap">
       <table>
         <thead>
-          <tr>
-            <th>ID</th>
-            <th>Status</th>
-            <th>Role</th>
-            <th>Origin</th>
-            <th>Destination</th>
-            <th>Pickup</th>
-            <th class="text-right">Rate</th>
-          </tr>
+          <tr><th>ID</th><th>Status</th><th>Role</th><th>Origin</th><th>Destination</th><th>Pickup</th><th class="text-right">Rate</th></tr>
         </thead>
         <tbody>
           {% for s in related %}

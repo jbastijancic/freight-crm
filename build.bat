@@ -6,10 +6,12 @@ pyinstaller --noconfirm --clean ^
   --onedir ^
   --add-data "templates;templates" ^
   --add-data "static;static" ^
+  --hidden-import=sqlalchemy.dialects.sqlite ^
+  --hidden-import=flask_sqlalchemy ^
   launcher.py
 
 echo.
 echo Done! Your app is in the dist\FreightDaddyCRM\ folder.
-echo Copy contacts.json, shipments.json, and config.json into that folder,
-echo then double-click FreightDaddyCRM.exe to launch.
+echo Copy config.json into that folder, then double-click FreightDaddyCRM.exe to launch.
+echo Your database (crm.db) will be created automatically on first run.
 pause
